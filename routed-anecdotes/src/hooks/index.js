@@ -29,7 +29,13 @@ export const useAnecdotes = () => {
     anecdoteService.getAll().then(data => setAnecdotes(data))
   }, [])
 
+  const addAnecdote = (anecdoteObject) => {
+    anecdoteService.createNew(anecdoteObject)
+      .then(createdAnecdote => setAnecdotes([ ...anecdotes, createdAnecdote ]))
+  }
+
   return {
-    anecdotes
+    anecdotes,
+    addAnecdote
   }
 }
