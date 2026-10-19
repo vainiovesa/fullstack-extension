@@ -8,7 +8,7 @@ export const useField = (type) => {
     setValue(event.target.value)
   }
 
-  const clear = () => {
+  const reset = () => {
     setValue('')
   }
 
@@ -18,7 +18,7 @@ export const useField = (type) => {
       value,
       onChange,
     },
-    clear
+    reset
   }
 }
 
@@ -34,7 +34,7 @@ export const useAnecdotes = () => {
       .then(createdAnecdote => setAnecdotes([ ...anecdotes, createdAnecdote ]))
   }
 
-  const removeAnecdote = (anecdoteObject) => {
+  const deleteAnecdote = (anecdoteObject) => {
     anecdoteService.remove(anecdoteObject)
       .then(removedAnecdote => setAnecdotes(anecdotes.filter(a => a.id !== removedAnecdote.id)))
   }
@@ -42,6 +42,6 @@ export const useAnecdotes = () => {
   return {
     anecdotes,
     addAnecdote,
-    removeAnecdote
+    deleteAnecdote
   }
 }

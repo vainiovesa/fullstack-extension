@@ -22,9 +22,9 @@ const CreateNew = () => {
 
   const handleReset = (e) => {
     e.preventDefault()
-    content.clear()
-    author.clear()
-    info.clear()
+    content.reset()
+    author.reset()
+    info.reset()
   }
 
   return (
