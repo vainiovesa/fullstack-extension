@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Routes, Route, Link, useMatch, useNavigate } from 'react-router-dom'
 import { Container, AppBar, Toolbar, Button, Typography } from '@mui/material'
 import { useNotificationControls } from './store'
+import { useBlogs, useBlogsControls } from './store'
 
 import BlogList from './components/BlogList'
 import Login from './components/Login'
@@ -14,15 +15,16 @@ import ErrorBoundary from './components/ErrorBoundary'
 import Notification from './components/Notification'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const blogs = useBlogs()
+  const { initialize, createBlog, likeBlog, removeBlog } = useBlogsControls()
   const [user, setUser] = useState(null)
   const { setNotification } = useNotificationControls()
 
   const navigation = useNavigate()
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+    initialize()
+  }, [initialize])
 
   useEffect(() => {
     const userJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -36,39 +38,30 @@ const App = () => {
 
   const notifyWith = (message, isError = false) => {
     setNotification({ message, isError })
-    setTimeout(() => {
-      setNotification({ message: null })
-    }, 25000)
   }
 
   const addBlog = async (blogObject) => {
     try {
-      const createdBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(createdBlog))
-      notifyWith(
-        `a new blog ${createdBlog.title} by ${createdBlog.author} added`,
-      )
+      createBlog(blogObject)
+      notifyWith(`a new blog ${blogObject.title} by ${blogObject.author} added`)
       navigation('/')
     } catch (error) {
       console.log('Creating new blog failed:', error)
     }
   }
 
-  const addLike = async (blog) => {
-    const newBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id }
+  const addLike = async (blogObject) => {
     try {
-      const updatedBlog = await blogService.update(newBlog)
-      setBlogs(blogs.map((b) => (b.id === blog.id ? updatedBlog : b)))
+      likeBlog(blogObject)
     } catch (error) {
       console.log('Error while trying to like a blog:', error)
     }
   }
 
-  const removeBlog = async (blog) => {
+  const deleteBlog = async (blogObject) => {
     try {
-      await blogService.remove(blog.id)
-      setBlogs(blogs.filter((b) => b.id !== blog.id))
-      notifyWith(`Blog ${blog.title} by ${blog.author} removed`)
+      removeBlog(blogObject)
+      notifyWith(`Blog ${blogObject.title} by ${blogObject.author} removed`)
       navigation('/')
     } catch (error) {
       console.log('Error while trying to delete a blog', error)
@@ -156,7 +149,7 @@ const App = () => {
                 blog={blog}
                 addLike={addLike}
                 currentUser={user}
-                removeBlog={removeBlog}
+                removeBlog={deleteBlog}
               />
             }
           />
