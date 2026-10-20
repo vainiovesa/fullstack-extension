@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-
 import { Routes, Route, Link, useMatch, useNavigate } from 'react-router-dom'
-
 import { Container, AppBar, Toolbar, Button, Typography } from '@mui/material'
+import { useNotificationControls } from './store'
 
 import BlogList from './components/BlogList'
 import Login from './components/Login'
@@ -17,7 +16,7 @@ import Notification from './components/Notification'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState({ message: null })
+  const { setNotification } = useNotificationControls()
 
   const navigation = useNavigate()
 
@@ -146,7 +145,7 @@ const App = () => {
           </Toolbar>
         </AppBar>
 
-        <Notification notification={notification} />
+        <Notification />
 
         <Routes>
           <Route path="/" element={<BlogList blogs={blogs} />} />
