@@ -1,0 +1,42 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RlciIsImlkIjoiNmE5YzU4NDJlZDEyYWJjMzE0ZmRiMjlmIiwiaWF0IjoxNzg4Nzk3NTU1fQ.6e1SR-8z5xz7pp1xYS7VLhXCgU_2EpsNnXvzy96U5eE
+
+{
+    "title": "Rest test",
+    "author": "Rester the Tester",
+    "url": "https://example.com/",
+    "likes": 0
+}
+
+###
+
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "tester",
+    "name": "Test Tester",
+    "password": "sekret"
+}
+
+###
+
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "tester2",
+    "name": "Test Tester 2",
+    "password": "sekret2"
+}
+
+###
+
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+    "username": "tester",
+    "password": "sekret"
+}
