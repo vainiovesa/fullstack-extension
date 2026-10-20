@@ -8,7 +8,7 @@ const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
   const [confirmOpen, setConfirmOpen] = useState(false)
 
   if (!blog) {
-    return null
+    return <h2>404 - Page not found</h2>
   }
 
   const canBeRemoved = () => currentUser && currentUser.username === blog.user.username
