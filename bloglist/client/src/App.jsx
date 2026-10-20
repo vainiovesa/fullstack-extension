@@ -8,6 +8,7 @@ import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import ErrorBoundary from './components/ErrorBoundary'
 
 import styled from 'styled-components'
 
@@ -230,30 +231,32 @@ const App = () => {
 
   return (
     <div>
-      <Nav>
-        <H1>Blog App</H1>
-        <NavItems>
-          <Link style={navlink} to="/">blogs</Link>
-          {!user && <Link style={navlink} to="/login">login</Link>}
-          {user && <Link style={navlink} to="/create">new blog</Link>}
-          {user && <NavBtn onClick={handleLogout}>logout</NavBtn>}
-        </NavItems>
-      </Nav>
+      <ErrorBoundary>
+        <Nav>
+          <H1>Blog App</H1>
+          <NavItems>
+            <Link style={navlink} to="/">blogs</Link>
+            {!user && <Link style={navlink} to="/login">login</Link>}
+            {user && <Link style={navlink} to="/create">new blog</Link>}
+            {user && <NavBtn onClick={handleLogout}>logout</NavBtn>}
+          </NavItems>
+        </Nav>
 
-      <Routes>
-        <Route path="/" element={blogList()} />
-        <Route path="/login" element={loginForm()} />
-        <Route path="/create" element={
-          <BlogForm createBlog={addBlog} />
-        } />
-        <Route path="/blogs/:id" element={
-          <Blog
-            blog={blog}
-            handleLike={handleLike}
-            handleRemove={handleRemove}
-            user={user} />
-        } />
-      </Routes>
+        <Routes>
+          <Route path="/" element={blogList()} />
+          <Route path="/login" element={loginForm()} />
+          <Route path="/create" element={
+            <BlogForm createBlog={addBlog} />
+          } />
+          <Route path="/blogs/:id" element={
+            <Blog
+              blog={blog}
+              handleLike={handleLike}
+              handleRemove={handleRemove}
+              user={user} />
+          } />
+        </Routes>
+      </ErrorBoundary>
     </div>
   )
 }
