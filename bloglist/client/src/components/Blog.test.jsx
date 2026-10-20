@@ -6,13 +6,13 @@ describe('Blog', () => {
   const creator = {
     username: 'totester',
     name: 'Tommy Tester',
-    id: '6836bfea4b580b29430b00b7'
+    id: '6836bfea4b580b29430b00b7',
   }
 
   const otherUser = {
     username: 'otheruser',
     name: 'Other User',
-    id: 'abc123'
+    id: 'abc123',
   }
 
   const blog = {
@@ -20,7 +20,7 @@ describe('Blog', () => {
     author: 'Edsger W. Dijkstra',
     url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
     likes: 12,
-    user: creator
+    user: creator,
   }
 
   test('blog info and likes are shown to unauthenticated user, no buttons', () => {
@@ -42,7 +42,14 @@ describe('Blog', () => {
   })
 
   test('both like and remove buttons are shown to the blog creator', () => {
-    render(<Blog blog={blog} currentUser={creator} addLike={vi.fn()} removeBlog={vi.fn()} />)
+    render(
+      <Blog
+        blog={blog}
+        currentUser={creator}
+        addLike={vi.fn()}
+        removeBlog={vi.fn()}
+      />,
+    )
 
     expect(screen.getByText('like')).toBeDefined()
     expect(screen.getByText('remove')).toBeDefined()

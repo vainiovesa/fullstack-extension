@@ -7,7 +7,7 @@ const BlogForm = ({ createBlog }) => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  const handleCreateNew = event => {
+  const handleCreateNew = (event) => {
     event.preventDefault()
     createBlog({ title, author, url })
     setTitle('')
@@ -38,7 +38,11 @@ const BlogForm = ({ createBlog }) => {
             value={url}
             onChange={({ target }) => setUrl(target.value)}
           />
-          <Button type="submit" variant="contained" sx={{ alignSelf: 'flex-start' }}>
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{ alignSelf: 'flex-start' }}
+          >
             create
           </Button>
         </Stack>

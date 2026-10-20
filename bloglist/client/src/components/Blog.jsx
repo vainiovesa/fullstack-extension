@@ -1,7 +1,16 @@
 import { useState } from 'react'
 import {
-  Card, CardContent, Typography, Button, Box, Link,
-  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Box,
+  Link,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from '@mui/material'
 
 const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
@@ -11,7 +20,8 @@ const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
     return <h2>404 - Page not found</h2>
   }
 
-  const canBeRemoved = () => currentUser && currentUser.username === blog.user.username
+  const canBeRemoved = () =>
+    currentUser && currentUser.username === blog.user.username
 
   const handleRemove = () => {
     removeBlog(blog)
@@ -28,7 +38,13 @@ const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
           by {blog.author}
         </Typography>
 
-        <Link href={blog.url} target="_blank" rel="noopener" display="block" sx={{ mb: 1 }}>
+        <Link
+          href={blog.url}
+          target="_blank"
+          rel="noopener"
+          display="block"
+          sx={{ mb: 1 }}
+        >
           {blog.url}
         </Link>
 
@@ -69,7 +85,9 @@ const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setConfirmOpen(false)}>cancel</Button>
-          <Button onClick={handleRemove} color="error" variant="contained">remove</Button>
+          <Button onClick={handleRemove} color="error" variant="contained">
+            remove
+          </Button>
         </DialogActions>
       </Dialog>
     </Card>

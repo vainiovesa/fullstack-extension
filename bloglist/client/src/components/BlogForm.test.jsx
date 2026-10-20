@@ -6,7 +6,7 @@ import BlogForm from './BlogForm'
 const newBlog = {
   title: 'Clean Code: The Good, the Bad and the Ugly',
   author: 'Daniel Gerlach',
-  url: 'https://gerlacdt.github.io/blog/posts/clean_code/'
+  url: 'https://gerlacdt.github.io/blog/posts/clean_code/',
 }
 
 describe('BlogForm', () => {

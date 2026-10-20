@@ -5,5 +5,5 @@ import App from './App'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Router>
     <App />
-  </Router>
+  </Router>,
 )
