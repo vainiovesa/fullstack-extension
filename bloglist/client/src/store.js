@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import blogService from './services/blogs'
+import loginService from './services/login'
 
 const useNotificationStore = create((set) => ({
   notification: '',
@@ -40,9 +41,35 @@ const useBlogsStore = create((set) => ({
         blogs: state.blogs.filter((b) => b.id !== blogObject.id),
       }))
     },
-    initialize: async () => {
+    initializeBlogs: async () => {
       const blogs = await blogService.getAll()
       set(() => ({ blogs }))
+    },
+  },
+}))
+
+const useUserStore = create((set) => ({
+  user: null,
+  actions: {
+    loginUser: async (username, password) => {
+      const user = await loginService.login({ username, password })
+
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+      blogService.setToken(user.token)
+      set(() => ({ user }))
+    },
+    logoutUser: async () => {
+      window.localStorage.removeItem('loggedBlogappUser')
+      set(() => ({ user: null }))
+    },
+    initializeUser: async () => {
+      const userJSON = window.localStorage.getItem('loggedBlogappUser')
+      const user = JSON.parse(userJSON)
+
+      if (user) {
+        blogService.setToken(user.token)
+        set(() => ({ user }))
+      }
     },
   },
 }))
@@ -54,3 +81,6 @@ export const useNotificationControls = () =>
 
 export const useBlogs = () => useBlogsStore((state) => state.blogs)
 export const useBlogsControls = () => useBlogsStore((state) => state.actions)
+
+export const useUser = () => useUserStore((state) => state.user)
+export const useUserControls = () => useUserStore((state) => state.actions)

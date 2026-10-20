@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Routes, Route, Link, useMatch, useNavigate } from 'react-router-dom'
 import { Container, AppBar, Toolbar, Button, Typography } from '@mui/material'
-import { useNotificationControls } from './store'
-import { useBlogs, useBlogsControls } from './store'
+import {
+  useNotificationControls,
+  useBlogs,
+  useBlogsControls,
+  useUser,
+  useUserControls,
+} from './store'
 
 import BlogList from './components/BlogList'
 import Login from './components/Login'
-import blogService from './services/blogs'
-import loginService from './services/login'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import ErrorBoundary from './components/ErrorBoundary'
@@ -16,25 +19,21 @@ import Notification from './components/Notification'
 
 const App = () => {
   const blogs = useBlogs()
-  const { initialize, createBlog, likeBlog, removeBlog } = useBlogsControls()
-  const [user, setUser] = useState(null)
+  const { initializeBlogs, createBlog, likeBlog, removeBlog } =
+    useBlogsControls()
+  const user = useUser()
+  const { initializeUser, loginUser, logoutUser } = useUserControls()
   const { setNotification } = useNotificationControls()
 
   const navigation = useNavigate()
 
   useEffect(() => {
-    initialize()
-  }, [initialize])
+    initializeBlogs()
+  }, [initializeBlogs])
 
   useEffect(() => {
-    const userJSON = window.localStorage.getItem('loggedBlogappUser')
-    const user = JSON.parse(userJSON)
-
-    if (user) {
-      blogService.setToken(user.token)
-      setUser(user)
-    }
-  }, [])
+    initializeUser()
+  }, [initializeUser])
 
   const notifyWith = (message, isError = false) => {
     setNotification({ message, isError })
@@ -70,11 +69,7 @@ const App = () => {
 
   const doLogin = async ({ username, password }) => {
     try {
-      const user = await loginService.login({ username, password })
-
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
+      loginUser(username, password)
       navigation('/')
     } catch {
       notifyWith('wrong username or password', true)
@@ -83,8 +78,7 @@ const App = () => {
   }
 
   const handleLogout = async () => {
-    window.localStorage.removeItem('loggedBlogappUser')
-    setUser(null)
+    logoutUser()
     navigation('/')
   }
 
