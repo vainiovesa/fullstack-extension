@@ -1,26 +1,26 @@
 const express = require('express')
 const path = require('path')
 const mongoose = require('mongoose')
+const blogsRouter = require('./controllers/blogs')
+const loginRouter = require('./controllers/login')
+const testingRouter = require('./controllers/testing')
+const usersRouter = require('./controllers/users')
 const config = require('./utils/config')
 const middleware = require('./utils/middleware')
-const blogRouter = require('./controllers/blogs')
-const usersRouter = require('./controllers/users')
-const loginRouter = require('./controllers/login')
 
 const app = express()
 
-mongoose.connect(config.MONGODB_URI, { family: 4 })
+mongoose.connect(config.MONGODB_URI)
 
 app.use(express.json())
 app.use(middleware.requestLogger)
 app.use(middleware.tokenExtractor)
 
-app.use('/api/blogs', blogRouter)
-app.use('/api/users', usersRouter)
+app.use('/api/blogs', blogsRouter)
 app.use('/api/login', loginRouter)
+app.use('/api/users', usersRouter)
 
 if (process.env.NODE_ENV === 'test') {
-  const testingRouter = require('./controllers/testing')
   app.use('/api/testing', testingRouter)
 }
 

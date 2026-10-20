@@ -1,53 +1,79 @@
-import styled from 'styled-components'
+import { useState } from 'react'
+import {
+  Card, CardContent, Typography, Button, Box, Link,
+  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
+} from '@mui/material'
 
-const BlogElement = styled.div`
-  margin: 1em;
-  padding: 0.5em 1em;
-  border: none;
-  border-radius: 10px;
-  border: 1px solid black;
-`
+const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
-const Button = styled.button`
-  background: White;
-  text-transform: uppercase;
-  font-size: 1.2em;
-  padding: 2px 10px;
-  border: 2px solid Dodgerblue;
-  border-radius: 10px;
-  cursor: pointer;
-`
-
-const Blog = ({ blog, handleLike, handleRemove, user }) => {
-
-  const like = () => {
-    handleLike(blog)
+  if (!blog) {
+    return null
   }
 
-  const remove = () => {
-    handleRemove(blog)
+  const canBeRemoved = () => currentUser && currentUser.username === blog.user.username
+
+  const handleRemove = () => {
+    removeBlog(blog)
+    setConfirmOpen(false)
   }
 
   return (
-    <BlogElement>
-      <div>
-        <h3>
-          {blog.author}: {blog.title}
-        </h3>
-        <a href={blog.url}>{blog.url}</a>
-        <div>
-          likes {blog.likes} {user && <Button onClick={like}>like</Button>}
-        </div>
-        <div>
-          Added by {blog.user.username}
-        </div>
-        {user && user.username === blog.user.username &&
-          <div>
-            <Button onClick={remove}>remove</Button>
-          </div>
-        }
-      </div>
-    </BlogElement>
-  )}
+    <Card sx={{ mt: 2, maxWidth: 600 }} className="blog">
+      <CardContent>
+        <Typography variant="h5" gutterBottom>
+          {blog.title}
+        </Typography>
+        <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+          by {blog.author}
+        </Typography>
+
+        <Link href={blog.url} target="_blank" rel="noopener" display="block" sx={{ mb: 1 }}>
+          {blog.url}
+        </Link>
+
+        <Typography variant="body2" color="text.secondary" gutterBottom>
+          Added by {blog.user.name}
+        </Typography>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+          <Typography variant="body1">{blog.likes} likes</Typography>
+          {currentUser && (
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => addLike(blog)}
+            >
+              like
+            </Button>
+          )}
+          {canBeRemoved() && (
+            <Button
+              size="small"
+              variant="outlined"
+              color="error"
+              onClick={() => setConfirmOpen(true)}
+            >
+              remove
+            </Button>
+          )}
+        </Box>
+      </CardContent>
+
+      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+        <DialogTitle>Remove blog</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Remove blog <strong>{blog.title}</strong> by {blog.author}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmOpen(false)}>cancel</Button>
+          <Button onClick={handleRemove} color="error" variant="contained">remove</Button>
+        </DialogActions>
+      </Dialog>
+    </Card>
+  )
+}
 
 export default Blog

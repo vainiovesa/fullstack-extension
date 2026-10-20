@@ -1,23 +1,16 @@
-import styled from 'styled-components'
+import { Alert } from '@mui/material'
 
-const NotificationElement = styled.div`
-  color: ${({ type }) => type === 'error' ? 'red' : 'green'};
-  background: lightgrey;
-  font-size: 20px;
-  border-style: solid;
-  padding: 10px;
-  margin: 10px 0;
-`
+const Notification = ({ notification }) => {
+  const { message, isError } = notification
 
-const Notification = ({ message, type }) => {
-  if (message === null) {
+  if (!message) {
     return null
   }
 
   return (
-    <NotificationElement className="notification" type={type}>
+    <Alert severity={isError ? 'error' : 'success'} sx={{ my: 2 }}>
       {message}
-    </NotificationElement>
+    </Alert>
   )
 }
 

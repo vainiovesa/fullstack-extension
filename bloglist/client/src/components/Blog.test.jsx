@@ -1,119 +1,50 @@
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { describe, expect, test, vi } from 'vitest'
 import Blog from './Blog'
 
-describe('When user is not logged in', () => {
-  test('renders content', () => {
-    const blog = {
-      author: 'test author',
-      title: 'test title',
-      url: 'www.example.com',
-      likes: 0,
-      user: {
-        username: 'tester'
-      }
-    }
+describe('Blog', () => {
+  const creator = {
+    username: 'totester',
+    name: 'Tommy Tester',
+    id: '6836bfea4b580b29430b00b7'
+  }
 
-    render(<Blog blog={blog} />)
+  const otherUser = {
+    username: 'otheruser',
+    name: 'Other User',
+    id: 'abc123'
+  }
 
-    const title = screen.getByText('test author: test title')
-    expect(title).toBeVisible()
+  const blog = {
+    title: 'Canonical string reduction',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+    likes: 12,
+    user: creator
+  }
 
-    const urlElement = screen.getByText('www.example.com')
-    const likesElement = screen.getByText('likes 0')
-    expect(urlElement).toBeVisible()
-    expect(likesElement).toBeVisible()
+  test('blog info and likes are shown to unauthenticated user, no buttons', () => {
+    render(<Blog blog={blog} currentUser={null} />)
 
-    const buttons = screen.queryByRole('button')
-    expect(buttons).toBeNull()
+    screen.getByText('likes 12', { exact: false })
+    screen.getByText(blog.url, { exact: false })
+    screen.getByText(blog.user.name, { exact: false })
+
+    expect(screen.queryByText('like')).toBeNull()
+    expect(screen.queryByText('remove')).toBeNull()
   })
 
-  // test('clicking view shows url and likes', async () => {
-  //   const blog = {
-  //     author: 'test author',
-  //     title: 'test title',
-  //     url: 'www.example.com',
-  //     likes: 0,
-  //     user: {
-  //       username: 'tester'
-  //     }
-  //   }
+  test('only like button is shown to a logged-in user who is not the creator', () => {
+    render(<Blog blog={blog} currentUser={otherUser} addLike={vi.fn()} />)
 
-  //   render(<Blog blog={blog} />)
-
-  //   const user = userEvent.setup()
-  //   const button = screen.getByText('view')
-  //   await user.click(button)
-
-  //   const urlElement = screen.getByText('www.example.com')
-  //   const likesElement = screen.getByText('likes 0')
-  //   const userElement = screen.getByText('tester')
-  //   expect(urlElement).toBeVisible()
-  //   expect(likesElement).toBeVisible()
-  //   expect(userElement).toBeVisible()
-  // })
-
-  // test('clicking like twice calls like twice', async () => {
-  //   const blog = {
-  //     author: 'test author',
-  //     title: 'test title',
-  //     url: 'www.example.com',
-  //     likes: 0,
-  //     user: {
-  //       username: 'tester'
-  //     }
-  //   }
-
-  //   const mockHandler = vi.fn()
-
-  //   render(<Blog blog={blog} handleLike={mockHandler} />)
-
-  //   const user = userEvent.setup()
-  //   const button = screen.getByText('like')
-  //   await user.click(button)
-  //   await user.click(button)
-
-  //   expect(mockHandler.mock.calls).toHaveLength(2)
-  // })
-})
-
-describe('When user is logged in', () => {
-  test('other user sees only like', () => {
-    const blog = {
-      author: 'test author',
-      title: 'test title',
-      url: 'www.example.com',
-      likes: 0,
-      user: {
-        username: 'tester'
-      }
-    }
-
-    render(<Blog blog={blog} user={{ username: 'other' }} />)
-
-    const button = screen.getByText('like')
-    expect(button).toBeVisible()
-
-    const removeButton = screen.queryByText('remove')
-    expect(removeButton).toBeNull()
+    expect(screen.getByText('like')).toBeDefined()
+    expect(screen.queryByText('remove')).toBeNull()
   })
 
-  test('user who created blog sees like and remove', () => {
-    const blog = {
-      author: 'test author',
-      title: 'test title',
-      url: 'www.example.com',
-      likes: 0,
-      user: {
-        username: 'tester'
-      }
-    }
+  test('both like and remove buttons are shown to the blog creator', () => {
+    render(<Blog blog={blog} currentUser={creator} addLike={vi.fn()} removeBlog={vi.fn()} />)
 
-    render(<Blog blog={blog} user={{ username: 'tester' }} />)
-
-    const likeButton = screen.getByText('like')
-    const removeButton = screen.getByText('remove')
-    expect(likeButton).toBeVisible()
-    expect(removeButton).toBeVisible()
+    expect(screen.getByText('like')).toBeDefined()
+    expect(screen.getByText('remove')).toBeDefined()
   })
 })

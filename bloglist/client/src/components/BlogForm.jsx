@@ -1,70 +1,48 @@
 import { useState } from 'react'
-import styled from 'styled-components'
 
-const Button = styled.button`
-  background: Dodgerblue;
-  color: White;
-  text-transform: uppercase;
-  font-size: 1.2em;
-  margin: 1em;
-  padding: 0.5em 1em;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-`
-
-const Input = styled.input`
-  margin: 0.25em;
-  width: 300px;
-  border-radius: 10px;
-  padding: 10px;
-`
+import { TextField, Button, Stack } from '@mui/material'
 
 const BlogForm = ({ createBlog }) => {
-  const [newBlogTitle, setNewBlogTitle] = useState('')
-  const [newBlogAuthor, setNewBlogAuthor] = useState('')
-  const [newBlogUrl, setNewBlogUrl] = useState('')
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
-  const addBlog = (event) => {
+  const handleCreateNew = event => {
     event.preventDefault()
-    createBlog({
-      title: newBlogTitle,
-      author: newBlogAuthor,
-      url: newBlogUrl,
-    })
-
-    setNewBlogTitle('')
-    setNewBlogAuthor('')
-    setNewBlogUrl('')
+    createBlog({ title, author, url })
+    setTitle('')
+    setAuthor('')
+    setUrl('')
   }
 
   return (
     <div>
-      <h2>Create new</h2>
-
-      <form onSubmit={addBlog}>
-        <div>
-          <label>
-            title: <br />
-            <Input value={newBlogTitle} onChange={event => setNewBlogTitle(event.target.value)} />
-          </label>
-        </div>
-        <div>
-          <label>
-            author: <br />
-            <Input value={newBlogAuthor} onChange={event => setNewBlogAuthor(event.target.value)} />
-          </label>
-        </div>
-        <div>
-          <label>
-            url: <br />
-            <Input value={newBlogUrl} onChange={event => setNewBlogUrl(event.target.value)} />
-          </label>
-        </div>
-
-        <Button type="submit">create</Button>
+      <h2>create new</h2>
+      <form onSubmit={handleCreateNew}>
+        <Stack spacing={2} sx={{ maxWidth: 400 }}>
+          <TextField
+            label="title"
+            size="small"
+            value={title}
+            onChange={({ target }) => setTitle(target.value)}
+          />
+          <TextField
+            label="author"
+            size="small"
+            value={author}
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+          <TextField
+            label="url"
+            size="small"
+            value={url}
+            onChange={({ target }) => setUrl(target.value)}
+          />
+          <Button type="submit" variant="contained" sx={{ alignSelf: 'flex-start' }}>
+            create
+          </Button>
+        </Stack>
       </form>
-
     </div>
   )
 }

@@ -1,25 +1,34 @@
 import { render, screen } from '@testing-library/react'
-import BlogForm from './BlogForm'
+import { expect, test, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
+import BlogForm from './BlogForm'
 
-test('<BlogForm /> callback is called with right data', async () => {
-  const user = userEvent.setup()
-  const createBlog = vi.fn()
+const newBlog = {
+  title: 'Clean Code: The Good, the Bad and the Ugly',
+  author: 'Daniel Gerlach',
+  url: 'https://gerlacdt.github.io/blog/posts/clean_code/'
+}
 
-  render(<BlogForm createBlog={createBlog} />)
+describe('BlogForm', () => {
+  test('event handler is called with right values when new blog is created', async () => {
+    const mockHandler = vi.fn()
+    render(<BlogForm createBlog={mockHandler} />)
 
-  const titleInput = screen.getByLabelText('title:')
-  const authorInput = screen.getByLabelText('author:')
-  const urlInput = screen.getByLabelText('url:')
-  const sendButton = screen.getByText('create')
+    const user = userEvent.setup()
 
-  await user.type(titleInput, 'test title')
-  await user.type(authorInput, 'test author')
-  await user.type(urlInput, 'test.url')
-  await user.click(sendButton)
+    const titleInput = screen.getByLabelText('title:')
+    await user.type(titleInput, newBlog.title)
 
-  expect(createBlog.mock.calls).toHaveLength(1)
-  expect(createBlog.mock.calls[0][0].title).toBe('test title')
-  expect(createBlog.mock.calls[0][0].author).toBe('test author')
-  expect(createBlog.mock.calls[0][0].url).toBe('test.url')
+    const authorInput = screen.getByLabelText('author:')
+    await user.type(authorInput, newBlog.author)
+
+    const urlInput = screen.getByLabelText('url:')
+    await user.type(urlInput, newBlog.url)
+
+    const button = screen.getByText('create')
+    await user.click(button)
+
+    expect(mockHandler.mock.calls).toHaveLength(1)
+    expect(mockHandler.mock.calls[0][0]).toEqual(newBlog)
+  })
 })
