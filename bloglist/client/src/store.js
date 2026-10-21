@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import usersService from './services/users'
 
 const useNotificationStore = create((set) => ({
   notification: '',
@@ -74,6 +75,16 @@ const useUserStore = create((set) => ({
   },
 }))
 
+const useUsersStore = create((set) => ({
+  users: [],
+  actions: {
+    initializeUsers: async () => {
+      const users = await usersService.getAll()
+      set(() => ({ users }))
+    },
+  },
+}))
+
 export const useNotification = () =>
   useNotificationStore((state) => state.notification)
 export const useNotificationControls = () =>
@@ -84,3 +95,6 @@ export const useBlogsControls = () => useBlogsStore((state) => state.actions)
 
 export const useUser = () => useUserStore((state) => state.user)
 export const useUserControls = () => useUserStore((state) => state.actions)
+
+export const useUsers = () => useUsersStore((state) => state.users)
+export const useUsersControls = () => useUsersStore((state) => state.actions)

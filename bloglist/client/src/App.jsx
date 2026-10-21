@@ -13,6 +13,7 @@ import BlogList from './components/BlogList'
 import Login from './components/Login'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import Users from './components/Users'
 import ErrorBoundary from './components/ErrorBoundary'
 
 import Notification from './components/Notification'
@@ -101,6 +102,14 @@ const App = () => {
             >
               blogs
             </Button>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/users"
+              sx={{ '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}
+            >
+              users
+            </Button>
             {!user ? (
               <Button
                 color="inherit"
@@ -135,7 +144,8 @@ const App = () => {
         <Notification />
 
         <Routes>
-          <Route path="/" element={<BlogList blogs={blogs} />} />
+          <Route path="/" element={<BlogList />} />
+          <Route path="/users" element={<Users />} />
           <Route
             path="/blogs/:id"
             element={
