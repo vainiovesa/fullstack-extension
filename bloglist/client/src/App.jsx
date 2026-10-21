@@ -7,6 +7,7 @@ import {
   useBlogsControls,
   useUser,
   useUserControls,
+  useUsers,
 } from './store'
 
 import BlogList from './components/BlogList'
@@ -14,6 +15,7 @@ import Login from './components/Login'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Users from './components/Users'
+import User from './components/User'
 import ErrorBoundary from './components/ErrorBoundary'
 
 import Notification from './components/Notification'
@@ -24,6 +26,7 @@ const App = () => {
     useBlogsControls()
   const user = useUser()
   const { initializeUser, loginUser, logoutUser } = useUserControls()
+  const users = useUsers()
   const { setNotification } = useNotificationControls()
 
   const navigation = useNavigate()
@@ -83,8 +86,15 @@ const App = () => {
     navigation('/')
   }
 
-  const match = useMatch('/blogs/:id')
-  const blog = match ? blogs.find((b) => b.id === match.params.id) : null
+  const blogMatch = useMatch('/blogs/:id')
+  const selectedBlog = blogMatch
+    ? blogs.find((b) => b.id === blogMatch.params.id)
+    : null
+
+  const userMatch = useMatch('users/:id')
+  const selectedUser = userMatch
+    ? users.find((u) => u.id === userMatch.params.id)
+    : null
 
   return (
     <ErrorBoundary>
@@ -146,11 +156,12 @@ const App = () => {
         <Routes>
           <Route path="/" element={<BlogList />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<User user={selectedUser} />} />
           <Route
             path="/blogs/:id"
             element={
               <Blog
-                blog={blog}
+                blog={selectedBlog}
                 addLike={addLike}
                 currentUser={user}
                 removeBlog={deleteBlog}

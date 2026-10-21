@@ -9,6 +9,7 @@ import {
 } from '@mui/material'
 import { useEffect } from 'react'
 import { useUsers, useUsersControls } from '../store'
+import { Link } from 'react-router-dom'
 
 const Users = () => {
   const users = useUsers()
@@ -33,7 +34,9 @@ const Users = () => {
           <TableBody>
             {users.map((user) => (
               <TableRow key={user.id}>
-                <TableCell>{user.name}</TableCell>
+                <TableCell>
+                  <Link to={`/users/${user.id}`}>{user.name}</Link>
+                </TableCell>
                 <TableCell>{user.username}</TableCell>
                 <TableCell>{user.blogs.length}</TableCell>
               </TableRow>
