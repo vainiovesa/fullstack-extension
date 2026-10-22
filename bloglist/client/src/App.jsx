@@ -5,10 +5,9 @@ import {
   useNotificationControls,
   useBlogs,
   useBlogsControls,
-  useUser,
-  useUserControls,
   useUsers,
 } from './store'
+import { useUser, useUserControls } from './services/persistentUser'
 
 import BlogList from './components/BlogList'
 import Login from './components/Login'
@@ -25,7 +24,7 @@ const App = () => {
   const { initializeBlogs, createBlog, likeBlog, removeBlog } =
     useBlogsControls()
   const user = useUser()
-  const { initializeUser, loginUser, logoutUser } = useUserControls()
+  const { getUser, saveUser, removeUser } = useUserControls()
   const users = useUsers()
   const { setNotification } = useNotificationControls()
 
@@ -36,8 +35,8 @@ const App = () => {
   }, [initializeBlogs])
 
   useEffect(() => {
-    initializeUser()
-  }, [initializeUser])
+    getUser()
+  }, [getUser])
 
   const notifyWith = (message, isError = false) => {
     setNotification({ message, isError })
@@ -73,7 +72,7 @@ const App = () => {
 
   const doLogin = async ({ username, password }) => {
     try {
-      loginUser(username, password)
+      saveUser(username, password)
       navigation('/')
     } catch {
       notifyWith('wrong username or password', true)
@@ -82,7 +81,7 @@ const App = () => {
   }
 
   const handleLogout = async () => {
-    logoutUser()
+    removeUser()
     navigation('/')
   }
 
@@ -97,60 +96,60 @@ const App = () => {
     : null
 
   return (
-    <ErrorBoundary>
-      <Container>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              Blog App
-            </Typography>
+    <Container>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Blog App
+          </Typography>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/"
+            sx={{ '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}
+          >
+            blogs
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/users"
+            sx={{ '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}
+          >
+            users
+          </Button>
+          {!user ? (
             <Button
               color="inherit"
               component={Link}
-              to="/"
+              to="/login"
               sx={{ '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}
             >
-              blogs
+              login
             </Button>
-            <Button
-              color="inherit"
-              component={Link}
-              to="/users"
-              sx={{ '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}
-            >
-              users
-            </Button>
-            {!user ? (
+          ) : (
+            <>
               <Button
                 color="inherit"
                 component={Link}
-                to="/login"
+                to="/create"
                 sx={{ '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}
               >
-                login
+                new blog
               </Button>
-            ) : (
-              <>
-                <Button
-                  color="inherit"
-                  component={Link}
-                  to="/create"
-                  sx={{ '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}
-                >
-                  new blog
-                </Button>
-                <Button
-                  color="inherit"
-                  onClick={handleLogout}
-                  sx={{ '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}
-                >
-                  logout
-                </Button>
-              </>
-            )}
-          </Toolbar>
-        </AppBar>
+              <Button
+                color="inherit"
+                onClick={handleLogout}
+                sx={{ '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}
+              >
+                logout
+              </Button>
+            </>
+          )}
+        </Toolbar>
+      </AppBar>
 
+      <ErrorBoundary>
         <Notification />
 
         <Routes>
@@ -172,8 +171,8 @@ const App = () => {
           <Route path="/create" element={<BlogForm createBlog={addBlog} />} />
           <Route path="*" element={<h2>404 - Page not found</h2>} />
         </Routes>
-      </Container>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </Container>
   )
 }
 
