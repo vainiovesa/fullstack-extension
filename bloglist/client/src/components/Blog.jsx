@@ -96,6 +96,32 @@ const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
             </Button>
           )}
         </Box>
+
+        <Typography variant="h5" gutterBottom>
+          comments
+        </Typography>
+
+        <form onSubmit={handleAddComment}>
+          <TextField
+            label="add a comment"
+            size="small"
+            value={comment}
+            onChange={({ target }) => setComment(target.value)}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{ alignSelf: 'flex-start' }}
+          >
+            add comment
+          </Button>
+        </form>
+
+        <ul>
+          {comments.map((c) => (
+            <li key={c.id}>{c.comment}</li>
+          ))}
+        </ul>
       </CardContent>
 
       <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
@@ -112,32 +138,6 @@ const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Typography variant="h5" gutterBottom>
-        comments
-      </Typography>
-
-      <form onSubmit={handleAddComment}>
-        <TextField
-          label="add a comment"
-          size="small"
-          value={comment}
-          onChange={({ target }) => setComment(target.value)}
-        />
-        <Button
-          type="submit"
-          variant="contained"
-          sx={{ alignSelf: 'flex-start' }}
-        >
-          add comment
-        </Button>
-      </form>
-
-      <ul>
-        {comments.map((c) => (
-          <li key={c.id}>{c.comment}</li>
-        ))}
-      </ul>
     </Card>
   )
 }
