@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Card,
   CardContent,
@@ -11,10 +11,22 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  TextField,
 } from '@mui/material'
+import { useCommentControls } from '../store'
+import { useComment, useComments } from '../store'
 
 const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const { setComment, postComment, initializeComments } = useCommentControls()
+  const comment = useComment()
+  const comments = useComments()
+
+  useEffect(() => {
+    if (blog) {
+      initializeComments(blog)
+    }
+  }, [blog, initializeComments])
 
   if (!blog) {
     return <h2>404 - Page not found</h2>
@@ -26,6 +38,16 @@ const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
   const handleRemove = () => {
     removeBlog(blog)
     setConfirmOpen(false)
+  }
+
+  const handleAddComment = async (event) => {
+    event.preventDefault()
+
+    try {
+      await postComment(blog.id, comment)
+    } catch (error) {
+      console.error('Failed to post comment:', error)
+    }
   }
 
   return (
@@ -90,6 +112,32 @@ const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Typography variant="h5" gutterBottom>
+        comments
+      </Typography>
+
+      <form onSubmit={handleAddComment}>
+        <TextField
+          label="add a comment"
+          size="small"
+          value={comment}
+          onChange={({ target }) => setComment(target.value)}
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{ alignSelf: 'flex-start' }}
+        >
+          add comment
+        </Button>
+      </form>
+
+      <ul>
+        {comments.map((c) => (
+          <li key={c.id}>{c.comment}</li>
+        ))}
+      </ul>
     </Card>
   )
 }

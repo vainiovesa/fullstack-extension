@@ -85,6 +85,27 @@ const useUsersStore = create((set) => ({
   },
 }))
 
+const useCommentStore = create((set) => ({
+  comment: '',
+  comments: [],
+  actions: {
+    setComment: (comment) => {
+      set(() => ({ comment }))
+    },
+    postComment: async (id, comment) => {
+      const newComments = await blogService.comment(id, comment)
+
+      set((state) => ({
+        comment: state.comment === comment ? '' : state.comment,
+        comments: newComments,
+      }))
+    },
+    initializeComments: ({ comments }) => {
+      set(() => ({ comments }))
+    },
+  },
+}))
+
 export const useNotification = () =>
   useNotificationStore((state) => state.notification)
 export const useNotificationControls = () =>
@@ -98,3 +119,8 @@ export const useUserControls = () => useUserStore((state) => state.actions)
 
 export const useUsers = () => useUsersStore((state) => state.users)
 export const useUsersControls = () => useUsersStore((state) => state.actions)
+
+export const useComment = () => useCommentStore((state) => state.comment)
+export const useComments = () => useCommentStore((state) => state.comments)
+export const useCommentControls = () =>
+  useCommentStore((state) => state.actions)
